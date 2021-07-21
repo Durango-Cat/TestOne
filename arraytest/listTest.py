@@ -51,6 +51,10 @@ lists = ['Show', 'me', 12, 32, 45]
 # print(listReverse)
 
 # 排序的話，要求列表中數據的類型要一致。
-lists = [12,55,78,1,4,66]
+# lists = [12,55,78,1,4,66]
+# 第一种方式，针对所有可迭代序列都有效
 # listSort = sorted(lists)
-# print(listSort)
+print(sorted({1: 'D', 2: 'B', 3: 'B', 4: 'E', 5: 'A'}))
+# 第二种方式，这种只针对列表
+# lists.sort()
+# print(lists)
