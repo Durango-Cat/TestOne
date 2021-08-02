@@ -21,3 +21,10 @@ a,c=c,a
 print(a,c)
 '''
 print(5+4)
+
+# 试下round方法
+num = 98.43454523
+# 而且round方法都是向下取整
+# print(round(num, 2))
+# 后面不写的话，就是取整了。
+print(round(num))
