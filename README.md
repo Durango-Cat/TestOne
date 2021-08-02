@@ -1,2 +1,2 @@
-# PythonTestOne
-python熟悉练手项目
+# TestOne
+自己练习python的小项目
