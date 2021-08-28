@@ -54,7 +54,39 @@ lists = ['Show', 'me', 12, 32, 45]
 # lists = [12,55,78,1,4,66]
 # 第一种方式，针对所有可迭代序列都有效
 # listSort = sorted(lists)
-print(sorted({1: 'D', 2: 'B', 3: 'B', 4: 'E', 5: 'A'}))
+# print(sorted({1: 'D', 2: 'B', 3: 'B', 4: 'E', 5: 'A'}))
 # 第二种方式，这种只针对列表
 # lists.sort()
 # print(lists)
+
+# 列表推导式
+vec = [3, 7, 11]
+# 表示将这个列表数值都成3
+# var = [3 * x for x in vec]
+# 平方, 也是针对返回结果中每个元素都是一个列表。用[]括起来的。如果不括起来，就表示只返回一个值
+# var = [[x, x**2] for x in vec]
+# 在for的in后面加上if判断，判断在遍历的过程中是否符合，符合了才会执行接下来的操作
+# var = [2*x for x in vec if x < 4]
+# var = [1+x for x in vec if x > 4]
+# 如果是2个列表，需要对2个列表的对应的
+# vec2 = [4, 8, 12]
+# 这个返回就是将x数组长度 * y数组长度
+# var = [x+y for x in vec for y in vec2] # [7, 11, 15, 11, 15, 19, 15, 19, 23]
+
+# 去掉字符串的前后空格
+# vec1 = [' 生活 ', '魔咒 ', ' 解放']
+# var = [xx.strip() for xx in vec1]
+
+# 嵌套列表解析。即2维数组
+matrix = [
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12]
+]
+# 将3*4的矩阵列表 转换为 4*3的列表
+# var = [[row[i] for row in matrix] for i in range(4)]
+# 上面的代码相当于下面拆开的写法
+var = []
+for i in range(4):
+    var.append([row[i] for row in matrix])
+print(var)
