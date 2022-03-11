@@ -27,7 +27,11 @@ mac电脑上安装的sklearn时0.23.2不存在这个问题，windows电脑上skl
 原因：从 Scikit-Learn 0.24 开始，fetch_openml() 默认返回 Pandas DataFrame。
 为了避免这种情况并保持与书中相同的代码，我们使用 as_frame=False。
 '''
-mnist = fetch_openml('mnist_784', version=1, as_frame=False) # 从原来的fetch_mldata('MNIST original') 改成现在这个样子，sklearn里面的openml是在0.20.0版本开始才支持的。本质都是一样的内容
+if sklearn.__version__ < '0.24.0':
+    mnist = fetch_openml('mnist_784')
+else :
+    # 从原来的fetch_mldata('MNIST original') 改成现在这个样子，sklearn里面的openml是在0.20.0版本开始才支持的。本质都是一样的内容
+    mnist = fetch_openml('mnist_784', version=1, as_frame=False) 
 # print(mnist)
 X, y = mnist["data"], mnist["target"]
 # print(X)
