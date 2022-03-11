@@ -64,7 +64,7 @@ y = np.c_[country_stats["Life satisfaction"]]
 # plt.show() # 手动关闭，还可以继续执行接下来的代码逻辑
 
 # 选择线性模型
-#lin_reg_model = LinearRegression()
+#lin_reg_model = LinearRegression()   # LinearRegression()是一个预测器
 lin_reg_model = KNeighborsRegressor(n_neighbors=3)
 
 # 训练模型
@@ -72,5 +72,5 @@ lin_reg_model.fit(X, y)
 
 # 对塞浦路斯进行预测
 X_new = [[22587]]  # 塞浦路斯的人均 GDP
-print(lin_reg_model.predict(X_new)) # outputs [[ 5.96242338]]
+print(lin_reg_model.predict(X_new)) # outputs [[ 5.96242338]]  # predict():用新实例的数据集做出相应的预测
 
