@@ -53,7 +53,7 @@ X_train, X_test, y_train, y_test = X[:60000], X[60000:], y[:60000], y[60000:]
 # print(X_train) # X输出的都是二维数值数组，不是字符串
 # print("查看下DataFrame y_train的类型：", y_train.dtype) # object
 # print(y_train) # 输出：['5' '0' '4' ... '5' '6' '8']
-y_train = y_train.astype(np.int8) # 不加这个就是输出的是[False], 一个值，加上之后输出的是[False True]
+y_train = y_train.astype(np.int8) # 不加这个y_train_5的输出的是[False], 一个值。加上之后输出的是[False True]
 # print("查看下DataFrame y_train的类型：", y_train.dtype) # int8
 # print(y_train) # 输出：[5 0 4 ... 5 6 8]
 y_test = y_test.astype(np.int8)
@@ -78,21 +78,39 @@ y_test_5 = (y_test == 5)
 选择 随机梯度下降SGD分类器。这个分类器的好处:能够高效的处理非常大的数据集。原因在于:SGD每次只处理一条数据,适合在线学习。
 '''
 sgd_clf = SGDClassifier(random_state=42)
-sgd_clf.fit(X_train, y_train_5) # 在整个训练集上进行训练
-# x = sgd_clf.predict([some_digit])
+sgd_clf.fit(X_train, y_train_5) # 在整个训练集上进行训练 ，fit(X，y) 里面的X训练样本，y是训练样本目标值（类标签）
+# x = sgd_clf.predict([some_digit]) # 预测
 # print(x) # 输出True
 
 # 交叉验证
-skfolds = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
+'''
+交叉验证的基本思想是把在某种意义下将原始数据(dataset)进行分组,一部分做为训练集(train set),
+另一部分做为验证集(validation set or test set),首先用训练集对分类器进行训练,再利用验证集来测试训练
+得到的模型(model),以此来做为评价分类器的性能指标。
+
+K折交叉验证，初始采样分割成K个大小相等子样本，一个单独的子样本被保留作为验证模型的数据，其他K-1个样本用来训练。
+交叉验证重复K次，每个子样本验证一次，平均K次的结果或者使用其它结合方式，最终得到一个单一估测。
+这个方法的优势在于，同时重复运用随机产生的子样本进行训练和验证，每次的结果验证一次，10折交叉验证是最常用的。
+（我在下面试了下，60000个数据量切成K折，每3份，就会把每折的训练集为40000，测试集20000。这样每一折都有重叠的数据
+
+n_splits:折叠次数，默认为3，至少为2。
+shuffle:是否在每次分割之前打乱顺序。
+random_state:随机种子，在shuffle==True时使用，默认使用np.random。
+'''
+skfolds = StratifiedKFold(n_splits=3, shuffle=True, random_state=42) 
 for train_index, test_index in skfolds.split(X_train, y_train_5):
     clone_clf = clone(sgd_clf)
     X_train_folds = X_train[train_index]
     y_train_folds = (y_train_5[train_index])
+
     X_test_fold = X_train[test_index]
     y_test_fold = (y_train_5[test_index])
-    clone_clf.fit(X_train_folds, y_train_folds)
-    y_pred = clone_clf.predict(X_test_fold)
-    # print("train_index: ", train_index, " test_index:", test_index, "y_pred: ", y_pred)
-    n_correct = sum(y_pred == y_test_fold)
-    # print(n_correct)
-    print(n_correct / len(y_pred))  # 0.9718  0.9669  0.952
+
+    clone_clf.fit(X_train_folds, y_train_folds) # 训练
+    y_test_pred = clone_clf.predict(X_test_fold) # 预测
+    print("train_index.length: ", len(train_index), " test_index.length:", len(test_index), "y_pred: ", y_test_pred)
+    value = y_test_pred == y_test_fold
+    print(value)
+    n_correct = sum(value)
+    print(n_correct)
+    print(n_correct / len(y_test_pred))  # 0.9718  0.9669  0.952  # 计算出被正确预测的数目和输出正确预测的比例
