@@ -1,7 +1,7 @@
 '''
 估计器: 常见的方法：fit()
 转换器：常见的方法：transform()
-预测器
+预测器: predict()
 '''
 
 import numpy as np
