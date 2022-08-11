@@ -12,6 +12,9 @@ import numpy as np
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import StratifiedKFold
 from sklearn.base import clone
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_predict
+from sklearn.metrics import precision_score, recall_score
 
 '''
 报错:urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed
@@ -27,7 +30,8 @@ mac电脑上安装的sklearn时0.23.2不存在这个问题，windows电脑上skl
 原因：从 Scikit-Learn 0.24 开始，fetch_openml() 默认返回 Pandas DataFrame。
 为了避免这种情况并保持与书中相同的代码，我们使用 as_frame=False。
 '''
-if sklearn.__version__ < '0.24.0':
+version = sklearn.__version__ < '0.24.0'
+if version:
     mnist = fetch_openml('mnist_784')
 else :
     # 从原来的fetch_mldata('MNIST original') 改成现在这个样子，sklearn里面的openml是在0.20.0版本开始才支持的。本质都是一样的内容
@@ -39,7 +43,7 @@ X, y = mnist["data"], mnist["target"]
 # print(y.shape)
 
 # 
-if sklearn.__version__ < '0.24.0':
+if version:
     some_digit = np.array(X.iloc[0])
 else :
     some_digit = X[0]
@@ -97,6 +101,9 @@ n_splits:折叠次数，默认为3，至少为2。
 shuffle:是否在每次分割之前打乱顺序。
 random_state:随机种子，在shuffle==True时使用，默认使用np.random。
 '''
+
+# K折交叉验证的方式一
+
 skfolds = StratifiedKFold(n_splits=3, shuffle=True, random_state=42) 
 for train_index, test_index in skfolds.split(X_train, y_train_5):
     clone_clf = clone(sgd_clf)
@@ -107,10 +114,24 @@ for train_index, test_index in skfolds.split(X_train, y_train_5):
     y_test_fold = (y_train_5[test_index])
 
     clone_clf.fit(X_train_folds, y_train_folds) # 训练
-    y_test_pred = clone_clf.predict(X_test_fold) # 预测
-    print("train_index.length: ", len(train_index), " test_index.length:", len(test_index), "y_pred: ", y_test_pred)
-    value = y_test_pred == y_test_fold
-    print(value)
+    x_pred = clone_clf.predict(X_test_fold) # 预测
+    # print("train_index.length: ", len(train_index), " test_index.length:", len(test_index), "x_pred: ", x_pred)
+    # print("x_pred: ", x_pred)
+    value = x_pred == y_test_fold
+    # print(value)
     n_correct = sum(value)
-    print(n_correct)
-    print(n_correct / len(y_test_pred))  # 0.9718  0.9669  0.952  # 计算出被正确预测的数目和输出正确预测的比例
+    # print(n_correct)
+    # print(n_correct / len(x_pred))  # 0.9718  0.9669  0.952  # 计算出被正确预测的数目和输出正确预测的比例
+
+# k = precision_score(y_train_5, y_pred)
+# print(k)
+# K折交叉验证的方式二, 得到评估分数
+# value = cross_val_score(sgd_clf, X_train, y_train_5, cv=3, scoring="accuracy")
+# print(value) # [0.95265 0.9641  0.96935]
+
+# K折交叉验证的方式三，得到预测值
+y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3)
+print(len(y_train_pred)) # 长度都是60000
+print(len(y_train_5))    # 长度都是60000
+print(recall_score(y_train_5, y_train_pred))  # 召回率 0.7885998893193138
+
