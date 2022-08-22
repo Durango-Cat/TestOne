@@ -16,7 +16,7 @@ print(clf.predict([[-0.8, -1]]))
 
 print("==Predict result by predict_proba==")
 p = clf.predict_proba([[-0.8, -1]])
-print(eval(lambda x: '%f' % x， p[0][0]), str(eval(p[0][1])))
+# print(eval(lambda x: '%f' % x， p[0][0]), str(eval(p[0][1])))
 
 print("==Predict result by predict_log_proba==")
 print(clf.predict_log_proba([[-0.8, -1]]))
